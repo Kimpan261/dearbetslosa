@@ -1,0 +1,34 @@
+﻿@*
+*@
+@{
+}
+@model DeArbetslosa.Models.Arrivals;
+@*
+@Model.Flights[1].ArrivalTime.ScheduledUtc
+*@
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <table>
+        <th>Arrival time</th>
+        <th>From</th>
+        <th>Id</th>
+        <th>Status</th>
+        @foreach(var a in Model.Flights)
+        {
+            if(a.ArrivalTime.ScheduledUtc < DateTime.Now) //TODO compare to set time
+            {
+                //do nothing
+            } else
+            {
+                
+            <tr>
+            <td>@a.ArrivalTime.ScheduledUtc</td>
+            <td>@a.DepartureAirportEnglish</td>
+            <td>@a.FlightId</td>
+            <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>
+            </tr>
+            }
+        }
+    </table>
+</div>
+

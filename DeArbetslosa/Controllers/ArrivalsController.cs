@@ -1,21 +1,17 @@
 ﻿using DeArbetslosa.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net.Http.Headers;
-using System.Xml;
 
 namespace DeArbetslosa.Controllers
 {
-	public class HomeController : Controller
+	public class ArrivalsController : Controller
 	{
 
-		private readonly ILogger<HomeController> _logger;
+		private readonly ILogger<ArrivalsController> _logger;
 
-		public HomeController(ILogger<HomeController> logger)
+		public ArrivalsController(ILogger<ArrivalsController> logger)
 		{
 			_logger = logger;
 		}
@@ -28,11 +24,7 @@ namespace DeArbetslosa.Controllers
             return View(a);
 		}
 
-		public IActionResult Privacy()
-		{
-			return View();
-		}
-
+		
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
@@ -54,17 +46,6 @@ namespace DeArbetslosa.Controllers
 			var response = await client.GetAsync(uri);
 			var responseContent = await response.Content.ReadAsStringAsync();
 			return responseContent;
-			
-			/*
-			a = JsonConvert.DeserializeObject<Arrival>(responseContent);	
-            await Console.Out.WriteLineAsync(a.NumberOfFlights);
-			await Console.Out.WriteLineAsync(responseContent);
-
-            await Console.Out.WriteLineAsync(a.Flights[1].ArrivalTime.ScheduledUtc.ToString());
-            await Console.Out.WriteLineAsync(a.Flights[1].DepartureAirportEnglish);
-            await Console.Out.WriteLineAsync(a.Flights[1].FlightId);
-            await Console.Out.WriteLineAsync(a.Flights[1].FlightLegStatusEnglish);
-			*/
-        }
+		}
 	}
 }

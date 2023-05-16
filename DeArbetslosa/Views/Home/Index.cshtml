@@ -6,22 +6,48 @@
 @*
 @Model.Flights[1].ArrivalTime.ScheduledUtc
 *@
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <table>
-        <th>Arrival time</th>
-        <th>From</th>
-        <th>Id</th>
-        <th>Status</th>
-        @foreach(var a in Model.Flights)
-        {
-            <tr>
-            <td>@a.ArrivalTime.ScheduledUtc</td>
-            <td>@a.DepartureAirportEnglish</td>
-            <td>@a.FlightId</td>
-            <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>
-            </tr>
+<head>
+    <style>
+        .flex-containerMenu {
+            background-color: rgba(255, 255, 255, 0.8);
+            text-align: left;
+            display: flex;
+            flex-direction: row;
+            font-size: 30px;
         }
-    </table>
+
+       .flex-containerItem
+       {
+            display: flex;
+            flex-direction: row;
+       }
+
+    </style>
+</head>
+<div class="text-center">
+    <h1 class="display-4">
+        Välkommen till Göteborg
+        Landvetter Airport
+    </h1>
+    <div class="flex-containerMenu">
+        <a href="www.w3schools.co">
+        <div class=".flex-containerItem" >
+            <img src="img/arriving.jpg">
+            Avgångar
+        </div>
+        </a>
+        <a href="Home/Security">
+        <div class=".flex-containerItem" href="https://www.w3schools.com">
+            <img src="img/flying.jpg">
+            Ankomster
+        </div>
+        </a>
+        <a href="Swedavia/Security">
+        <div class=".flex-containerItem">
+            <img src="img/ezgif-4-bf94aa4fe2.png">
+            Väntetid i säkerhetskontroll
+        </div>
+        </a>
+    </div>
 </div>
  

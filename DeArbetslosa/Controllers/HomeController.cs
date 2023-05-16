@@ -50,8 +50,8 @@ namespace DeArbetslosa.Controllers
 			client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "b137901e98094345a598042dbdc5827d"); //TODO external key
 
 			var uri = "https://api.swedavia.se/flightinfo/v2/" + IATA + "/arrivals/" + t;
-
-			var response = await client.GetAsync(uri);
+            
+            var response = await client.GetAsync(uri);
 			var responseContent = await response.Content.ReadAsStringAsync();
 			return responseContent;
 			

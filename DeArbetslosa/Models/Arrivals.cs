@@ -4,8 +4,8 @@
 	{
 		public string NumberOfFlights { get; set; }
 		public F[] Flights { get; set; }
-
-		public class F // Flights
+        
+        public class F // Flights
 		{
 			public string DepartureAirportEnglish;
 			public string FlightId;
@@ -25,7 +25,7 @@
 		}
 		public Arrivals()
 		{
-
+			
 		}
 	}
 }

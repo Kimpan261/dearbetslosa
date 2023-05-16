@@ -8,9 +8,10 @@ namespace DeArbetslosa
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
-
+            builder.Services.AddHttpClient(); // Registers the HttpClient service Step 3 
+            
 			var app = builder.Build();
-
+			app.MapControllers();
 			// Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
 			{
@@ -18,6 +19,7 @@ namespace DeArbetslosa
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

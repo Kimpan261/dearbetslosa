@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using DeArbetslosa.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
 namespace DeArbetslosa.Controllers
 {
     public class SwedaviaController : Controller
@@ -34,11 +33,11 @@ namespace DeArbetslosa.Controllers
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var waitTimeResponse = JsonConvert.DeserializeObject<SecurityWaitTimeResponse>(content);
-                    
+               
                     // waitTimeResponse is stored in the ViewData["SecurityWaitTime"] dictionary entry
                     // which will be accessible in the view.
                     ViewData["SecurityWaitTime"] = waitTimeResponse;
-
+   
                     return View("~/Views/Home/Security.cshtml", waitTimeResponse);
                 }
                 else

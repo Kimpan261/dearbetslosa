@@ -21,7 +21,9 @@ namespace DeArbetslosa.Controllers
             string today = (DateTime.Now).ToString("yyyy-MM-dd");
             string airportIATA = "GOT";
 
-            var listFlightInfo = GetDepartureFlightInfo(today, airportIATA);
+            var flights = await GetAllDepartureFlightInfo(today, airportIATA);
+
+            ViewData["Flights"] = flights;
 
             return View();
         }
@@ -35,7 +37,7 @@ namespace DeArbetslosa.Controllers
 
         // *********************************************************************************************************
         // private Functions 
-        private static async Task<List<Flight>> GetDepartureFlightInfo(string date, string IATA)
+        private static async Task<List<Flight>> GetAllDepartureFlightInfo(string date, string IATA)
         {
             var client = new HttpClient();
             //string today = (DateTime.Now).ToString("yyyy-MM-dd");
@@ -58,8 +60,8 @@ namespace DeArbetslosa.Controllers
             List<Flight> listFlightInfo = responseBodyToOpject.flights.ToList();
 
             // Filter flight Like flightLegStatus IS NOTE "DEL"
-            var result = listFlightInfo.Where(f => f.locationAndStatus.flightLegStatus != "DEL").ToList();
-
+            var result = listFlightInfo.Where(f => f.locationAndStatus.flightLegStatus != "DEL")
+                                        .OrderBy(f => f.departureTime.scheduledUtc).ToList();
 
             return result;
 

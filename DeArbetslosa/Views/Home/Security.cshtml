@@ -78,7 +78,7 @@
 		
 		<div class="grid-item item2">
 			<p>Säkerhetskontroll:</p>
-			@if (Model.WaitTimes[0].CurrentProjectedWaitTime > 0)
+			@if (Model.WaitTimes[0].CurrentProjectedWaitTime > 0 )
 			{
 				<tr>
 
@@ -86,6 +86,11 @@
 					
 				</tr>
 			}
+			else 
+			{
+				<td>Please stand by</td>
+			}
+
 			
 		</div>
 		<div class="grid-item item5">

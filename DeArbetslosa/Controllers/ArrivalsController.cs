@@ -38,7 +38,7 @@ namespace DeArbetslosa.Controllers
 		public async Task<string> MakeRequest(DateTime d)
 		{
 			string t = d.ToString("yyyy-MM-dd");
-			string IATA = "GOT";
+			string IATA = "GOT"; //TODO hardcoded?
 
 			var client = new HttpClient();
 			client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));

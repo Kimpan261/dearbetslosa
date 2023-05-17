@@ -24,14 +24,14 @@
         @foreach(var a in Model.Flights)
         {
             //TODO rewrite
-            if(a.ArrivalTime.ScheduledUtc < DateTime.Now || a.LocationAndStatus.FlightLegStatusEnglish == "Deleted") //TODO compare to set time
+            //Hide flights already arrived and status deleted
+            if(a.ArrivalTime.ScheduledUtc < DateTime.Now.AddHours(-2) || a.LocationAndStatus.FlightLegStatusEnglish == "Deleted") //TODO compare to set time
             {
                 //do nothing
             } else
             {
-                
             <tr>
-            <td>@a.ArrivalTime.ScheduledUtc</td>
+            <td>@a.ArrivalTime.ScheduledUtc.AddHours(2)</td> @*TODO times are in GMT+0 *@
             <td>@a.DepartureAirportEnglish</td>
             <td>@a.FlightId</td>
             <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>

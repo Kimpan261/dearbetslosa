@@ -21,6 +21,7 @@
 			public class AT //ArrivalTime
 			{
 				public DateTime ScheduledUtc;
+				public DateTime EstimatedUtc;
 			}
 		}
 		public Arrivals()

@@ -6,6 +6,13 @@
 @*
 @Model.Flights[1].ArrivalTime.ScheduledUtc
 *@
+@using (Html.BeginForm("SetDate", "Arrivals", FormMethod.Post))
+{
+    <label for="date">date:</label>
+    <input type="date" id="date" name="date">
+
+    <button type="submit">Filter</button>
+}
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <table>

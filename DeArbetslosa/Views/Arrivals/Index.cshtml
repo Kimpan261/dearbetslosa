@@ -6,23 +6,25 @@
 @*
 @Model.Flights[1].ArrivalTime.ScheduledUtc
 *@
+<head>
+   <script src="~/js/site.js"> </script>
+</head>
 @using (Html.BeginForm("SetDate", "Arrivals", FormMethod.Post))
 {
     <label for="date">date:</label>
     <input type="date" id="date" name="date">
-
     <button type="submit">Filter</button>
 }
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <table>
+    <table id="arrivalsTable">
         <th>Arrival time</th>
         <th>From</th>
         <th>Id</th>
         <th>Status</th>
         @foreach(var a in Model.Flights)
         {
-            if(a.ArrivalTime.ScheduledUtc < DateTime.Now) //TODO compare to set time
+            //TODO rewrite
+            if(a.ArrivalTime.ScheduledUtc < DateTime.Now || a.LocationAndStatus.FlightLegStatusEnglish == "Deleted") //TODO compare to set time
             {
                 //do nothing
             } else
@@ -38,4 +40,8 @@
         }
     </table>
 </div>
+
+<script type="text/javascript">
+    sortTable();
+</script>
 

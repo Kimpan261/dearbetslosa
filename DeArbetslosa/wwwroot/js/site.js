@@ -2,33 +2,66 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+function organizeTable() {
+    const table = document.getElementById("timetable");
+    const headers = Array.from(table.querySelectorAll("th"));
+    const sortingOrder = headers.map(() => 0);
 
-//ARRIVALS / DEPARTURE
-function sortTable() {
-    console.log("ye");
-    const table = document.getElementById("arrivalsTable"); // TODO for departure later
-    const rows = table.getElementsByTagName("tr");
-    const dateColumnIndex = 0;
-    const sortTableByDate = () => {
-        const sortedRows = Array.from(rows).slice(1); // Exclude the table header row
-        sortedRows.sort((rowA, rowB) => {
-            const dateA = new Date(rowA.cells[dateColumnIndex].textContent);
-            const dateB = new Date(rowB.cells[dateColumnIndex].textContent);
-            return dateA - dateB;
-        });
+    function compareTime(a, b) {
+        const timeA = a.textContent.trim().split(":");
+        const timeB = b.textContent.trim().split(":");
 
-        while (table.rows.length > 1) {
-            table.deleteRow(1); // Remove existing rows, starting from index 1
+        const hourA = parseInt(timeA[0]);
+        const hourB = parseInt(timeB[0]);
+
+        const minuteA = parseInt(timeA[1]);
+        const minuteB = parseInt(timeB[1]);
+
+        if (hourA < hourB) {
+            return -1;
+        } else if (hourA > hourB) {
+            return 1;
+        } else {
+            if (minuteA < minuteB) {
+                return -1;
+            } else if (minuteA > minuteB) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    // Function to sort the table based on a column index
+    function sortTable(columnIndex) {
+        const rows = Array.from(table.querySelectorAll("tbody tr"));
+        if (columnIndex == 0) {
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex];
+                const cellB = rowB.cells[columnIndex];
+
+                const comparison = compareTime(cellA, cellB);
+
+                return sortingOrder[columnIndex] === 0 ? comparison : -comparison;
+            });
+        } else { 
+            //rows.sort((a, b) => a.localeCompare(b));
+            console.log(rows);
         }
 
-        sortedRows.forEach((row) => {
-            table.appendChild(row); // Append sorted rows back to the table
-        });
-    };
+        sortingOrder[columnIndex] ^= 1; // Toggle the sorting order
 
-    // Add click event listener to the date column header
-    //const dateHeader = table.rows[0].cells[dateColumnIndex];
-    //dateHeader.addEventListener("click", sortTableByDate);
-    sortTableByDate();
+        // Update the table with the sorted rows
+        rows.forEach((row, index) => {
+            table.tBodies[0].appendChild(row);
+        });
+    }
+
+    // Add click event listeners to the table headers
+    headers.forEach((header, index) => {
+        header.addEventListener("click", () => sortTable(index));
+    });
+    sortTable();
 }
+
 

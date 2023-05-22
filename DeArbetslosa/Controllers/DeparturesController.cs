@@ -1,33 +1,37 @@
 ﻿using DeArbetslosa.Models;
+using DeArbetslosa.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 
 namespace DeArbetslosa.Controllers
 {
-	public class DeparturesController : Controller
-	{
+    public class DeparturesController : Controller
+    {
+        public Common c = new Common(); //API call here
+        private readonly ILogger<DeparturesController> _logger;
 
-		private readonly ILogger<DeparturesController> _logger;
+        public DeparturesController(ILogger<DeparturesController> logger)
+        {
+            _logger = logger;
+        }
 
-		public DeparturesController(ILogger<DeparturesController> logger)
-		{
-			_logger = logger;
-		}
+        public async Task<IActionResult> Index()
+        {
+            return View(await c.MakeRequest(DateTime.Now));
+        }
 
-		public async Task <IActionResult> Index()
-		{
-			//TODO make fully functional Arrivals page, then rework it for departures
-			return View();
-		}
+        public async Task<IActionResult> SetDate(string date)
+        {
+            //defaults to today
+            if (string.IsNullOrEmpty(date)) return View("Index", await c.MakeRequest(DateTime.Now));
+            return View("Index", await c.MakeRequest(DateTime.Parse(date)));
+        }
 
-		
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Error()
-		{
-			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-		}
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
 
-		}
+    }
 }

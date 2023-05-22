@@ -1,5 +1,51 @@
 ﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
+@model DeArbetslosa.Models.Timetable;
+<head>
+   <script src="~/js/site.js"> </script>
+</head>
+<h1>Departures from Landvetter GOT</h1>
+@using (Html.BeginForm("SetDate", "Departures", FormMethod.Post))
+{
+    <label for="date">date:</label>
+    <input type="date" id="date" name="date">
+    <button type="submit">Filter</button>
+}
+<div class="text-center">
+    <table id="timetable">
+        <thead>
+        <th>Arrival time</th>
+        <th>Airport</th>
+        <th>Id</th>
+        <th>Status</th>
+        </thead>
+        <tbody>
+
+
+        @foreach(var a in Model.Flights)
+        {
+            //TODO rewrite
+            //Hide flights already arrived and status deleted
+            if(a.DepartureTime.ScheduledUtc < DateTime.Now.AddHours(-2) || a.LocationAndStatus.FlightLegStatusEnglish == "Deleted") //TODO compare to set time
+            {
+                //do nothing
+            } else
+            {
+            <tr>
+            <td>@a.DepartureTime.ScheduledUtc.ToLocalTime().ToString("HH:mm")</td>
+            <td>@a.ArrivalAirportEnglish</td>
+            <td>@a.FlightId</td>
+            <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>
+            </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    organizeTable();
+</script>
+

@@ -2,13 +2,11 @@
 *@
 @{
 }
-@model DeArbetslosa.Models.Arrivals;
-@*
-@Model.Flights[1].ArrivalTime.ScheduledUtc
-*@
+@model DeArbetslosa.Models.Timetable;
 <head>
    <script src="~/js/site.js"> </script>
 </head>
+<h1>Arrivals to Landvetter GOT</h1>
 @using (Html.BeginForm("SetDate", "Arrivals", FormMethod.Post))
 {
     <label for="date">date:</label>
@@ -16,11 +14,16 @@
     <button type="submit">Filter</button>
 }
 <div class="text-center">
-    <table id="arrivalsTable">
+    <table id="timetable">
+        <thead>
         <th>Arrival time</th>
-        <th>From</th>
+        <th>Airport</th>
         <th>Id</th>
         <th>Status</th>
+        </thead>
+        <tbody>
+
+
         @foreach(var a in Model.Flights)
         {
             //TODO rewrite
@@ -31,17 +34,18 @@
             } else
             {
             <tr>
-            <td>@a.ArrivalTime.ScheduledUtc.AddHours(2)</td> @*TODO times are in GMT+0 *@
+            <td>@a.ArrivalTime.ScheduledUtc.ToLocalTime().ToString("HH:mm")</td>
             <td>@a.DepartureAirportEnglish</td>
             <td>@a.FlightId</td>
             <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>
             </tr>
             }
         }
+        </tbody>
     </table>
 </div>
 
 <script type="text/javascript">
-    sortTable();
+    organizeTable();
 </script>
 

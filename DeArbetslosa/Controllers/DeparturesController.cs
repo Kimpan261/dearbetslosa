@@ -17,6 +17,7 @@ namespace DeArbetslosa.Controllers
 
         public async Task<IActionResult> Index()
         {
+            //Test
             return View(await c.MakeRequest(DateTime.Now));
         }
 

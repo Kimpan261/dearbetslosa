@@ -1,51 +1,135 @@
-﻿@*
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Departures";
+    var flights = ViewBag.Flights;
+
+    DateTime today = DateTime.Now;
 }
-@model DeArbetslosa.Models.Timetable;
-<head>
-   <script src="~/js/site.js"> </script>
-</head>
-<h1>Departures from Landvetter GOT</h1>
-@using (Html.BeginForm("SetDate", "Departures", FormMethod.Post))
-{
-    <label for="date">date:</label>
-    <input type="date" id="date" name="date">
-    <button type="submit">Filter</button>
-}
-<div class="text-center">
-    <table id="timetable">
+
+
+<div class="col-12">
+    <!-- Breadcrumb -->
+    <nav style="--bs-breadcrumb-divider: '/';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Göteborg LANDVETTER</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Departures</li>
+        </ol>
+    </nav>
+
+    <div class="col-12 d-flex justify-content-between">
+        <!-- Header -->
+        @*<h2 class="text-primary">LANDVETTER</h2>*@
+
+        <!-- Filter Date -->
+        <div class="mt-2 mb-2 d-flex col-2">
+            <!-- dropdown  Filter-->
+            <div class="dropdown ms-2 me-5">
+                <a class="btn  btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    @*@ViewBag.dateFilter*@
+                    Date
+                </a>
+                <ul class="dropdown-menu ">
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.AddDays(-1).ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">Yesterday</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">Today</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.AddDays(1).ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">Tomorrow</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.AddDays(2).ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">@today.AddDays(2).ToString("yyyy-MM-dd")</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.AddDays(3).ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">@today.AddDays(3).ToString("yyyy-MM-dd")</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.AddDays(4).ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">@today.AddDays(4).ToString("yyyy-MM-dd")</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.AddDays(5).ToString("yyyy-MM-dd")">
+                            <button input="submit" class="dropdown-item">@today.AddDays(5).ToString("yyyy-MM-dd")</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Filter Time -->
+        <div class="mt-2 mb-2 d-flex col-2">
+            <!-- dropdown  Filter-->
+            <div class="dropdown ms-2 me-5">
+                <a class="btn  btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    @*@ViewBag.dateFilter*@
+                    Time
+                </a>
+                <ul class="dropdown-menu ">
+                    <li>
+                        <form method="post" asp-controller="Departures" asp-action="index">
+                            <input type="hidden" name="filter" value="@today.ToString("HH: mm")">
+                            <button input="submit" class="dropdown-item">@today.ToString("HH: mm")</button>
+                        </form>
+                    </li>                
+                </ul>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="mt-2 mb-2 d-flex card col-4">
+            
+        </div>
+
+        <!-- Last updated -->
+        <h6 class="pt-3 text-info text-end col-4">Last updated @(today.ToString("HH: mm"))</h6>
+
+    </div>
+
+    <!-- table -->
+    <table class="table table-hover">
         <thead>
-        <th>Arrival time</th>
-        <th>Airport</th>
-        <th>Id</th>
-        <th>Status</th>
-        </thead>
-        <tbody>
-
-
-        @foreach(var a in Model.Flights)
-        {
-            //TODO rewrite
-            //Hide flights already arrived and status deleted
-            if(a.DepartureTime.ScheduledUtc < DateTime.Now.AddHours(-2) || a.LocationAndStatus.FlightLegStatusEnglish == "Deleted") //TODO compare to set time
-            {
-                //do nothing
-            } else
-            {
             <tr>
-            <td>@a.DepartureTime.ScheduledUtc.ToLocalTime().ToString("HH:mm")</td>
-            <td>@a.ArrivalAirportEnglish</td>
-            <td>@a.FlightId</td>
-            <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>
+                <th scope="col" class="col-1">Tid</th>
+                <th scope="col" class="col-2">Till</th>
+                <th scope="col" class="col-2">FLIGHTNR</th>
+                <th scope="col" class="col-1">TERMINAL</th>
+                <th scope="col" class="col-5">STATUS</th>
             </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var flight in flights)
+            {
+                @*<tr onclick="location.href='@Url.ActionLink("Index", "Departures", new { Id = 22 })'">*@
+                <tr onclick="location.href='@Url.ActionLink("Index", "Departures")'">
+                    <th scope="row">@(flight.departureTime.scheduledUtc.ToString("HH: mm"))</th>
+                    <td>@flight.arrivalAirportSwedish</td>
+                    <td>@flight.flightId</td>
+                    <td>@flight.locationAndStatus.terminal</td>
+                    <td>@flight.locationAndStatus.flightLegStatusEnglish</td>
+                </tr>
             }
-        }
         </tbody>
     </table>
+
 </div>
 
-<script type="text/javascript">
-    organizeTable();
-</script>
+
 

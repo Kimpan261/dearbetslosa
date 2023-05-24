@@ -1,13 +1,15 @@
 ﻿using DeArbetslosa.Models;
 using DeArbetslosa.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace DeArbetslosa.Controllers
 {
     public class DeparturesController : Controller
     {
-        public Common c = new Common(); //API call here
+
         private readonly ILogger<DeparturesController> _logger;
 
         public DeparturesController(ILogger<DeparturesController> logger)
@@ -17,21 +19,53 @@ namespace DeArbetslosa.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //Test
-            return View(await c.MakeRequest(DateTime.Now));
-        }
+            string today = (DateTime.Now).ToString("yyyy-MM-dd");
+            string airportIATA = "GOT";
 
-        public async Task<IActionResult> SetDate(string date)
-        {
-            //defaults to today
-            if (string.IsNullOrEmpty(date)) return View("Index", await c.MakeRequest(DateTime.Now));
-            return View("Index", await c.MakeRequest(DateTime.Parse(date)));
+            var flights = await GetAllDepartureFlightInfo(today, airportIATA);
+
+            ViewData["Flights"] = flights;
+
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        // *********************************************************************************************************
+        // private Functions 
+        private static async Task<List<Flight>> GetAllDepartureFlightInfo(string date, string IATA)
+        {
+            var client = new HttpClient();
+            //string today = (DateTime.Now).ToString("yyyy-MM-dd");
+            //string airportIATA = "GOT";
+
+
+            // RequestHeaders
+            client.DefaultRequestHeaders.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+            client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "776827c8b0fd4515904e6ce6935eda67");
+
+            var uri = $"https://api.swedavia.se/flightinfo/v2/{IATA}/departures/{date}";
+
+
+            var response = await client.GetAsync(uri);
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+
+            var responseBodyToOpject = JsonConvert.DeserializeObject<Departure>(responseBody);
+            List<Flight> listFlightInfo = responseBodyToOpject.flights.ToList();
+
+            // Filter flight Like flightLegStatus IS NOTE "DEL"
+            var result = listFlightInfo.Where(f => f.locationAndStatus.flightLegStatus != "DEL")
+                                        .OrderBy(f => f.departureTime.scheduledUtc).ToList();
+
+            return result;
+
         }
 
     }

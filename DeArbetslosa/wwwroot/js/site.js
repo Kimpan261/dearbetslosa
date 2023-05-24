@@ -61,7 +61,7 @@ function organizeTable() {
     headers.forEach((header, index) => {
         header.addEventListener("click", () => sortTable(index));
     });
-    sortTable();
+    sortTable(0);
 }
 
 

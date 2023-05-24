@@ -1,12 +1,15 @@
 ﻿@*
 *@
 @{
+    var date = Model.to.flightArrivalDate;
 }
 @model DeArbetslosa.Models.Timetable;
 <head>
    <script src="~/js/site.js"> </script>
 </head>
-<h1>Arrivals to Landvetter GOT</h1>
+<h1>Arrivals</h1>
+<h2>@Model.to.arrivalAirportEnglish @Model.to.arrivalAirportIata </h2>
+<h3>@date</h3>
 @using (Html.BeginForm("SetDate", "Arrivals", FormMethod.Post))
 {
     <label for="date">date:</label>
@@ -23,21 +26,20 @@
         </thead>
         <tbody>
 
-
         @foreach(var a in Model.Flights)
         {
             //TODO rewrite
             //Hide flights already arrived and status deleted
-            if(a.ArrivalTime.ScheduledUtc < DateTime.Now.AddHours(-2) || a.LocationAndStatus.FlightLegStatusEnglish == "Deleted") //TODO compare to set time
+            if(a.arrivalTime.scheduledUtc < DateTime.Now.AddHours(-2)) //TODO LINQ in controller instead?
             {
                 //do nothing
             } else
             {
             <tr>
-            <td>@a.ArrivalTime.ScheduledUtc.ToLocalTime().ToString("HH:mm")</td>
-            <td>@a.DepartureAirportEnglish</td>
-            <td>@a.FlightId</td>
-            <td>@a.LocationAndStatus.FlightLegStatusEnglish</td>
+            <td>@a.arrivalTime.scheduledUtc.ToLocalTime().ToString("HH:mm")</td>
+            <td>@a.departureAirportEnglish</td>
+            <td>@a.flightId</td>
+            <td>@a.locationAndStatus.flightLegStatusEnglish</td>
             </tr>
             }
         }
@@ -46,6 +48,5 @@
 </div>
 
 <script type="text/javascript">
-    organizeTable();
+    organizeTable(); //TODO LINQ in controller instead?
 </script>
-

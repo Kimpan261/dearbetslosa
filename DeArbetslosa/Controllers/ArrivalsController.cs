@@ -2,6 +2,7 @@
 using DeArbetslosa.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace DeArbetslosa.Controllers
 {
@@ -17,14 +18,13 @@ namespace DeArbetslosa.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await c.MakeRequest(DateTime.Now, 1));
+            return View(await c.GetTimetable(DateTime.Now, false));
         }
         public async Task<IActionResult> SetDate(string date)
         {
             //defaults to today
-            if (string.IsNullOrEmpty(date)) return View("Index", await c.MakeRequest(DateTime.Now, 1));
-            return View("Index", await c.MakeRequest(DateTime.Parse(date), 1));
-
+            if (string.IsNullOrEmpty(date)) return View("Index", await c.GetTimetable(DateTime.Now, false));            
+            return View("Index", await c.GetTimetable(DateTime.Parse(date), false));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

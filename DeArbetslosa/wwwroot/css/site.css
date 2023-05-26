@@ -21,3 +21,7 @@ body {
   margin-bottom: 60px;
 }
 
+.dropdown-menu {
+    max-height: 200px;
+    overflow-y: scroll;
+}

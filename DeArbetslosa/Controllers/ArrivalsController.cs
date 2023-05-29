@@ -1,6 +1,7 @@
 ﻿using DeArbetslosa.Models;
 using DeArbetslosa.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
@@ -33,5 +34,11 @@ namespace DeArbetslosa.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public async Task<string> getFlightsJson(string date) // TODO return entire Timetable instead?
+        {
+            Timetable tt = await c.GetTimetable(DateTime.Parse(date), false);
+            var result = JsonConvert.SerializeObject(tt.Flights);
+            return result;
+        }
     }
 }

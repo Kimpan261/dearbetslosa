@@ -1,11 +1,13 @@
 ﻿@*
 *@
 @{
-    var date = Model.to.flightArrivalDate;
+    var date = Model.to.flightArrivalDate; //TODO making 2 identical API calls instead of one after implementing AJAX... not great lol
 }
 @model DeArbetslosa.Models.Timetable;
 <head>
-   <script src="~/js/site.js"> </script>
+    <script src="~/js/site.js"> </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
 </head>
 <h1>Arrivals</h1>
 <h2>@Model.to.arrivalAirportEnglish @Model.to.arrivalAirportIata </h2>
@@ -13,40 +15,23 @@
 @using (Html.BeginForm("SetDate", "Arrivals", FormMethod.Post))
 {
     <label for="date">date:</label>
-    <input type="date" id="date" name="date">
-    <button type="submit">Filter</button>
+    <input type="date" id="date" name="date" value="@date.ToString()">
+    <button type="submit">Set date</button>
 }
+<br />
+    <button onclick="refresh()">Refresh</button>
 <div class="text-center">
-    <table id="timetable">
-        <thead>
-        <th>Arrival time</th>
-        <th>Airport</th>
-        <th>Id</th>
-        <th>Status</th>
-        </thead>
-        <tbody>
-
-        @foreach(var a in Model.Flights)
-        {
-            //TODO rewrite
-            //Hide flights already arrived and status deleted
-            if(a.arrivalTime.scheduledUtc < DateTime.Now.AddHours(-2)) //TODO LINQ in controller instead?
-            {
-                //do nothing
-            } else
-            {
-            <tr>
-            <td>@a.arrivalTime.scheduledUtc.ToLocalTime().ToString("HH:mm")</td>
-            <td>@a.departureAirportEnglish</td>
-            <td>@a.flightId</td>
-            <td>@a.locationAndStatus.flightLegStatusEnglish</td>
-            </tr>
-            }
-        }
-        </tbody>
-    </table>
+    <div id="timetable">
+        <p>
+            Loading...
+        </p>
+    </div>
 </div>
 
 <script type="text/javascript">
-    organizeTable(); //TODO LINQ in controller instead?
+    newArrivalsRequest("@date.ToString()");
+
+    function refresh() {
+    newArrivalsRequest("@date.ToString()");
+    }
 </script>

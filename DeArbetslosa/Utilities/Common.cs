@@ -24,6 +24,7 @@ namespace DeArbetslosa.Utilities
 
             Timetable tt = JsonConvert.DeserializeObject<Timetable>(responseContent);
             tt.Flights = tt.Flights.Where(f => f.locationAndStatus.flightLegStatus != "DEL").ToList();
+            tt.Flights = tt.Flights.Where(f => f.arrivalTime.scheduledUtc > DateTime.UtcNow).ToList();
 
             if (requestDepartures) tt.Flights = tt.Flights
                     .OrderBy(f => f.departureTime.scheduledUtc)

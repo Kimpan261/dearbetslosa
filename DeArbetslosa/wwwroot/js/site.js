@@ -2,66 +2,77 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-function organizeTable() {
-    const table = document.getElementById("timetable");
-    const headers = Array.from(table.querySelectorAll("th"));
-    const sortingOrder = headers.map(() => 0);
-
-    function compareTime(a, b) {
-        const timeA = a.textContent.trim().split(":");
-        const timeB = b.textContent.trim().split(":");
-
-        const hourA = parseInt(timeA[0]);
-        const hourB = parseInt(timeB[0]);
-
-        const minuteA = parseInt(timeA[1]);
-        const minuteB = parseInt(timeB[1]);
-
-        if (hourA < hourB) {
-            return -1;
-        } else if (hourA > hourB) {
-            return 1;
-        } else {
-            if (minuteA < minuteB) {
-                return -1;
-            } else if (minuteA > minuteB) {
-                return 1;
-            } else {
-                return 0;
-            }
+function newArrivalsRequest(date, time) {
+    $.ajax({
+        url: '/Arrivals/getFlightsJson',
+        type: 'GET',
+        data: {date: date, time: time},
+        dataType: 'json',
+        success: function (result) {
+            //console.log(result);
+            var table = buildTable(result);
+            $('#timetable').empty().append(table);
+        },
+        error: function (error) {
+            console.log(error);
         }
-    }
-
-    // Function to sort the table based on a column index
-    function sortTable(columnIndex) {
-        const rows = Array.from(table.querySelectorAll("tbody tr"));
-        if (columnIndex == 0) {
-            rows.sort((rowA, rowB) => {
-                const cellA = rowA.cells[columnIndex];
-                const cellB = rowB.cells[columnIndex];
-
-                const comparison = compareTime(cellA, cellB);
-
-                return sortingOrder[columnIndex] === 0 ? comparison : -comparison;
-            });
-        } else { 
-            //rows.sort((a, b) => a.localeCompare(b));
-            console.log(rows);
-        }
-
-        sortingOrder[columnIndex] ^= 1; // Toggle the sorting order
-
-        // Update the table with the sorted rows
-        rows.forEach((row, index) => {
-            table.tBodies[0].appendChild(row);
-        });
-    }
-
-    // Add click event listeners to the table headers
-    headers.forEach((header, index) => {
-        header.addEventListener("click", () => sortTable(index));
     });
-    sortTable(0);
 }
+   function buildTable(data) {
+    // Create the table element
+    var table = document.createElement('table');
+    table.className = 'timetable';
+
+    // Create the table header
+    var tableHead = document.createElement('thead');
+    var headerRow = document.createElement('tr');
+
+    // Define the property-to-header mapping
+    var headerLabels = {
+        'arrivalTime.scheduledUtc': 'Arrival time',
+        'departureAirportEnglish': 'Arriving from',
+        'flightId': 'Flight ID',
+        'locationAndStatus.flightLegStatusEnglish': 'Status'
+    };
+
+    // Iterate through the headerLabels and create the header cells
+    Object.keys(headerLabels).forEach(function (property) {
+        var th = document.createElement('th');
+        th.textContent = headerLabels[property];
+        headerRow.appendChild(th);
+    });
+
+    tableHead.appendChild(headerRow);
+    table.appendChild(tableHead);
+
+    // Create the table body
+    var tableBody = document.createElement('tbody');
+    data.forEach(function (item) {
+        var row = document.createElement('tr');
+        Object.keys(headerLabels).forEach(function (property) {
+            var cell = document.createElement('td');
+            var properties = property.split('.');
+            var value = item;
+
+            properties.forEach(function (prop) {
+                value = value[prop];
+            });
+
+            if (property === 'arrivalTime.scheduledUtc') {
+                var formattedDate = new Date(value).toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" });
+                value = formattedDate;
+            }
+
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+
+    table.appendChild(tableBody);
+
+    return table;
+}
+
 
 

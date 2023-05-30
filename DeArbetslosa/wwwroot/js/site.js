@@ -2,13 +2,13 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-function newArrivalsRequest(date, time) {
+function newArrivalsRequest(date, time, term) { //TODO uni departures
     $.ajax({
         url: '/Arrivals/getFlightsJson',
         type: 'GET',
-        data: {date: date, time: time},
+        data: { date: date, time: time, term: term },
         dataType: 'json',
-        success: function (result) {
+        success: function (result) { //TODO null condition
             //console.log(result);
             var table = buildTable(result);
             $('#timetable').empty().append(table);
@@ -59,6 +59,7 @@ function newArrivalsRequest(date, time) {
             });
 
             if (property === 'arrivalTime.scheduledUtc') {
+                //todo 00:00 becomes 24 wtf
                 var formattedDate = new Date(value).toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" });
                 value = formattedDate;
             }
@@ -69,7 +70,7 @@ function newArrivalsRequest(date, time) {
         tableBody.appendChild(row);
     });
 
-    table.appendChild(tableBody);
+       table.appendChild(tableBody);
 
     return table;
 }

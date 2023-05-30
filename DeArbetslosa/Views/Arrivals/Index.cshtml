@@ -1,7 +1,7 @@
 ﻿@*
 *@
 @{
-    var date = Model.to.flightArrivalDate; //TODO making 2 identical API calls instead of one after implementing AJAX... not great lol
+    string today = DateTime.Now.ToString("yyyy-MM-dd");
 }
 @model DeArbetslosa.Models.Timetable;
 <head>
@@ -10,15 +10,18 @@
     <script src="~/lib/jquery/dist/jquery.js"></script>
 </head>
 <h1>Arrivals</h1>
-<h2>@Model.to.arrivalAirportEnglish @Model.to.arrivalAirportIata </h2>
-<h3>@date</h3>
-@using (Html.BeginForm("SetDate", "Arrivals", FormMethod.Post))
-{
-    <label for="date">date:</label>
-    <input type="date" id="date" name="date" value="@date.ToString()">
-    <button type="submit">Set date</button>
-}
-<br />
+<h3 id="dateTitle">@today</h3> @*TODO ??*@
+
+<form>
+    <input type="date" id="dateSelect" name="date" value="@today" />
+    <select id="timeSelect" name="time">
+        @for (int i = 0; i<24; i++) {
+            string s = i < 10 ? "0" + i : i.ToString();
+            <option value="@s:00">@s:00</option> 
+        }
+        </select>
+        <input id="tableSearch" />
+</form>
     <button onclick="refresh()">Refresh</button>
 <div class="text-center">
     <div id="timetable">
@@ -29,9 +32,15 @@
 </div>
 
 <script type="text/javascript">
-    newArrivalsRequest("@date.ToString()");
+    //TODO function for grabbing the entire Timetable as Json? as opposed to just Flights[]?
+    refresh();
 
     function refresh() {
-    newArrivalsRequest("@date.ToString()");
+        var date = document.getElementById("dateSelect").value; 
+        var time = document.getElementById("timeSelect").value; 
+        var term = document.getElementById("tableSearch").value; 
+        document.getElementById("dateTitle").innerHTML = date;
+        console.log(term);
+        newArrivalsRequest(date, time, term);
     }
 </script>

@@ -19,24 +19,21 @@ namespace DeArbetslosa.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await c.GetTimetable(DateTime.Now, false));
+            //Actually never sending the model to the view at all,
+            //as it is handled by AJAX. that would be an abundant API call
+            return View(); 
         }
-        public async Task<IActionResult> SetDate(string date)
-        {
-            //defaults to today
-            if (string.IsNullOrEmpty(date)) return View("Index", await c.GetTimetable(DateTime.Now, false));            
-            return View("Index", await c.GetTimetable(DateTime.Parse(date), false));
-        }
-
+       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<string> getFlightsJson(string date) // TODO return entire Timetable instead?
+        public async Task<string> getFlightsJson(string date, string time, string term) // TODO return entire Timetable instead and do a direct to getTimeTable?
         {
-            Timetable tt = await c.GetTimetable(DateTime.Parse(date), false);
+
+            Timetable tt = await c.GetTimetable(DateTime.Parse(date), time, term, false);
             var result = JsonConvert.SerializeObject(tt.Flights);
             return result;
         }

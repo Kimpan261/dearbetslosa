@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using static DeArbetslosa.Models.Timetable;
+using Flight = DeArbetslosa.Models.Flight;
 
 namespace DeArbetslosa.Controllers
 {
@@ -28,10 +30,9 @@ namespace DeArbetslosa.Controllers
 
             ViewData["Date"] = _date = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewData["Time"] = _time = "Tid";
-            ViewData["Filter"] = "";
+            ViewData["Filter"] = _filter = "";
 
-            var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
-            ViewData["Flights"] = flights;
+            ViewData["Flights"] =  await GetAllDepartureFlightInfo(_date, _airportIATA); ;
 
             return View();
         }
@@ -39,24 +40,24 @@ namespace DeArbetslosa.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string? date, string? time, string? filter)
         {
+
+            var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
+
             // Filter Date
             if (date != null)
             {
                 _date = date;
-                ViewData["Date"] = _date;
-                ViewData["Time"] = _time = "Tid";
-                ViewData["Filter"] = _filter;
+                _time = "Tid";
 
                 if (_filter != "")
                 {
-                    var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
-                    var result = flights.Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId.ToUpper() == _filter.ToLower());
+                    var result = flights.Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId == (_filter.ToUpper()));
                     ViewData["Flights"] = result;
+
                 }
                 else
                 {
-                    var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
-                    ViewData["Flights"] = flights;
+                    ViewData["Flights"] = await GetAllDepartureFlightInfo(_date, _airportIATA);
                 }
             }
 
@@ -64,23 +65,17 @@ namespace DeArbetslosa.Controllers
             if (time != null)
             {
                 _time = time;
-                ViewData["Date"] = _date;
-                ViewData["Time"] = _time;
-                ViewData["Filter"] = _filter;
 
                 if (time == "Tid")
                 {
                     if (_filter != "")
                     {
-                        var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
-                        var result = flights.Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId.ToUpper() == _filter.ToLower());
+                        var result = flights.Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId == (_filter.ToUpper()));
                         ViewData["Flights"] = result;
                     }
                     else
                     {
-                        var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
                         ViewData["Flights"] = flights;
-
                     }
                 }
                 else
@@ -89,36 +84,43 @@ namespace DeArbetslosa.Controllers
 
                     if (_filter != "")
                     {
-                        var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
                         var result = flights.Where(f => f.departureTime.scheduledUtc > filterTime)
-                                            .Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId.ToUpper() == _filter.ToLower());
+                                            .Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId == (_filter.ToUpper()));
                         ViewData["Flights"] = result;
                     }
                     else
                     {
-                        var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
                         var result = flights.Where(f => f.departureTime.scheduledUtc > filterTime);
                         ViewData["Flights"] = result;
-
                     }
 
                 }
 
             }
 
-            // Filter by flight or destination  Stockholm BMA
+            // Filter by flight or destination 
             if (filter != null)
             {
+                _time = "Tid";
                 _filter = filter;
-                ViewData["Date"] = _date;
-                ViewData["Time"] = _time;
-                ViewData["Filter"] = _filter;
 
-                var flights = await GetAllDepartureFlightInfo(_date, _airportIATA);
-                var result = flights.Where(f => f.arrivalAirportSwedish.ToLower() == filter.ToLower() || f.flightId.ToUpper() == filter.ToLower());
+                var result = flights.Where(f => f.arrivalAirportSwedish.ToLower() == _filter.ToLower() || f.flightId == (_filter.ToUpper()));
                 ViewData["Flights"] = result;
-
             }
+
+            // Filter = Null
+            if (date == null && time == null && filter == null)
+            {
+                _date = (DateTime.Now).ToString("yyyy-MM-dd");
+                _time = "tid";
+                _filter = "";
+
+                ViewData["Flights"] = await GetAllDepartureFlightInfo(_date, _airportIATA);
+            }
+
+            ViewData["Date"] = _date;
+            ViewData["Time"] = _time;
+            ViewData["Filter"] = _filter;
 
             return View();
         }

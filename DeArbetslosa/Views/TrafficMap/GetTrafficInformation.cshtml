@@ -1,0 +1,30 @@
+﻿@model List<Situation>
+
+<h2>Traffic Information</h2>
+
+@if (!String.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+             <!-- Step four Print out content in View-->
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table">
+        <tr>
+            <th>Message Type</th>
+            <th>Location Descriptor</th>
+        </tr>
+        @foreach (var situation in Model)
+        {
+            <tr>
+                <td>@situation.MessageType</td>
+                <td>@situation.LocationDescriptor</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>No traffic information available.</p>
+}

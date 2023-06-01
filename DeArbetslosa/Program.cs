@@ -6,6 +6,8 @@ namespace DeArbetslosa
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
+
+
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
             builder.Services.AddHttpClient(); // Registers the HttpClient service Step 3 

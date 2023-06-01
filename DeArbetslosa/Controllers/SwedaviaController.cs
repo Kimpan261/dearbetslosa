@@ -9,7 +9,7 @@ namespace DeArbetslosa.Controllers
     public class SwedaviaController : Controller
     {
         private readonly string apiKey = "c15de30006de4a5dac95375d4d751feb";
-        private readonly string apiUri = "https://api.swedavia.se/waittimepublic/v2/airports/ARN";
+        private readonly string apiUri = "https://api.swedavia.se/waittimepublic/v2/airports";
         private readonly HttpClient _httpClient;
 
         public SwedaviaController(HttpClient httpClient)
@@ -25,8 +25,8 @@ namespace DeArbetslosa.Controllers
             {
               
                 _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
-
-                var response = await _httpClient.GetAsync(apiUri);
+                
+                var response = await _httpClient.GetAsync(apiUri + "/ARN");
  
 
                 if (response.IsSuccessStatusCode)
